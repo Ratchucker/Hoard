@@ -32,8 +32,11 @@ import {
   BadgeCheck,
   RefreshCcw,
   Tag as TagIcon,
+  ScanLine,
 } from "lucide-react";
 import { toast } from "sonner";
+import { ScanPriceDialog } from "@/components/pricing/scan-dialog";
+import type { PriceMatch } from "@/lib/pricing/types";
 
 const TIMELINE_ICON: Record<string, React.ElementType> = {
   purchased: ShoppingCart,
@@ -74,6 +77,7 @@ function ItemDetailContent() {
   const [editingValue, setEditingValue] = React.useState(false);
   const [valueInput, setValueInput] = React.useState(String(item?.estimatedValue ?? 0));
   const [marketplaceId, setMarketplaceId] = React.useState(marketplaces.find((m) => m.isDefault)?.id ?? marketplaces[0]?.id);
+  const [scanOpen, setScanOpen] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   if (!item) {
@@ -108,6 +112,22 @@ function ItemDetailContent() {
     updateEstimatedValue(item!.id, num, true);
     setEditingValue(false);
     toast.success("Estimated value updated");
+  }
+
+  function applyPriceMatch(match: PriceMatch) {
+    const value = item!.isGraded ? match.gradedValue ?? match.looseValue : match.looseValue ?? match.gradedValue;
+    if (value !== undefined) {
+      updateEstimatedValue(item!.id, value, false);
+    }
+    if (!item!.imageUrl && match.imageUrl) {
+      updateCollectible(item!.id, { imageUrl: match.imageUrl });
+    }
+    setScanOpen(false);
+    toast.success(
+      match.source === "demo"
+        ? "Applied preview price — connect a PriceCharting API key to pull real data"
+        : `Updated from PriceCharting: ${match.name}`
+    );
   }
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -156,6 +176,9 @@ function ItemDetailContent() {
             </Button>
             <Button size="sm" variant="outline" onClick={() => fileInputRef.current?.click()}>
               <Paperclip className="size-3.5" /> Attach
+            </Button>
+            <Button size="sm" variant="outline" className="col-span-2" onClick={() => setScanOpen(true)}>
+              <ScanLine className="size-3.5" /> Scan for current price
             </Button>
             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
           </div>
@@ -311,6 +334,13 @@ function ItemDetailContent() {
           </Card>
         </div>
       </div>
+
+      <ScanPriceDialog
+        open={scanOpen}
+        onOpenChange={setScanOpen}
+        initialQuery={item.name}
+        onApply={applyPriceMatch}
+      />
     </div>
   );
 }

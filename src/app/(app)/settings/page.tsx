@@ -14,11 +14,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, Store, Plug } from "lucide-react";
+import { Plus, Trash2, Store, Plug, ScanLine } from "lucide-react";
 import { toast } from "sonner";
 
 const CURRENCIES = ["USD", "EUR", "GBP", "NZD", "AUD", "CAD", "JPY"];
-const INTEGRATIONS = ["Collectr", "PriceCharting", "TCGplayer", "CollX"];
+const INTEGRATIONS = ["Collectr", "TCGplayer", "CollX"];
 
 export default function SettingsPage() {
   return (
@@ -41,6 +41,14 @@ function SettingsContent() {
   const [name, setName] = React.useState("");
   const [pct, setPct] = React.useState("0");
   const [fixed, setFixed] = React.useState("0");
+  const [priceChartingConfigured, setPriceChartingConfigured] = React.useState<boolean | null>(null);
+
+  React.useEffect(() => {
+    fetch("/api/pricecharting/status")
+      .then((r) => r.json())
+      .then((d) => setPriceChartingConfigured(Boolean(d.configured)))
+      .catch(() => setPriceChartingConfigured(false));
+  }, []);
 
   function handleAddMarketplace() {
     if (!name.trim()) {
@@ -175,9 +183,34 @@ function SettingsContent() {
         <CardHeader className="pb-2"><CardTitle className="text-sm font-medium flex items-center gap-2"><Plug className="size-4" />Integrations</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            Live price and collection sync integrations are not yet connected. This is a placeholder for future API integrations — pricing stays manual until then.
+            Live price and collection sync integrations are placeholders for future API integrations, except PriceCharting,
+            which is wired up and ready for an API key.
           </p>
           <div className="grid sm:grid-cols-2 gap-3">
+            <div className="flex items-center justify-between rounded-lg border p-3 sm:col-span-2">
+              <div className="flex items-center gap-2.5">
+                <div className="flex items-center justify-center size-8 rounded-md bg-muted text-muted-foreground shrink-0">
+                  <ScanLine className="size-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">PriceCharting</p>
+                  <p className="text-xs text-muted-foreground">
+                    {priceChartingConfigured === null
+                      ? "Checking…"
+                      : priceChartingConfigured
+                        ? "Live pricing + images available from the item detail page."
+                        : "Add PRICECHARTING_API_KEY to your environment to go live."}
+                  </p>
+                </div>
+              </div>
+              {priceChartingConfigured === null ? (
+                <Badge variant="outline">Checking…</Badge>
+              ) : priceChartingConfigured ? (
+                <Badge variant="success">Connected</Badge>
+              ) : (
+                <Badge variant="outline">Demo mode</Badge>
+              )}
+            </div>
             {INTEGRATIONS.map((i) => (
               <div key={i} className="flex items-center justify-between rounded-lg border p-3">
                 <span className="text-sm font-medium">{i}</span>
