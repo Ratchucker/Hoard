@@ -7,9 +7,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+  --font-serif: var(--font-display);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -50,7 +53,7 @@
 
 :root {
   /* Collectfolio brand: navy #0B132B, red #B91C2C, silver #C0C0C8, off-white #F2F2F2, ink #111418 */
-  --background: #F7F7F5;
+  --background: #F2F2F2;
   --foreground: #111418;
   --card: #FFFFFF;
   --card-foreground: #111418;
@@ -60,20 +63,24 @@
   --primary-foreground: #F7F7F5;
   --secondary: #F2F2F2;
   --secondary-foreground: #0B132B;
-  --muted: #EDEDEE;
+  --muted: #EBEBEB;
   --muted-foreground: #6B6E76;
   --accent: #EAECF1;
   --accent-foreground: #0B132B;
   --destructive: #B91C2C;
-  --border: #E2E2E5;
-  --input: #E2E2E5;
+  /* Solid brand-red used sparingly for primary CTAs (distinct role from --destructive,
+     even though the color value matches — reserved for "the one important action". */
+  --brand: #B91C2C;
+  --brand-foreground: #FFFFFF;
+  --border: #E0E0E2;
+  --input: #E0E0E2;
   --ring: #0B132B;
   --chart-1: #0B132B;
   --chart-2: #B91C2C;
   --chart-3: #6C7A9C;
   --chart-4: #C0C0C8;
   --chart-5: #384166;
-  --radius: 0.625rem;
+  --radius: 0.5rem;
   --sidebar: #FFFFFF;
   --sidebar-foreground: #111418;
   --sidebar-primary: #0B132B;
@@ -100,6 +107,8 @@
   --accent: #232937;
   --accent-foreground: #F2F2F2;
   --destructive: #D33A48;
+  --brand: #C6303F;
+  --brand-foreground: #FFFFFF;
   --border: color-mix(in oklab, #C0C0C8 14%, transparent);
   --input: color-mix(in oklab, #C0C0C8 16%, transparent);
   --ring: #6C7A9C;

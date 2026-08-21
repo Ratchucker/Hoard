@@ -33,7 +33,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-primary/5 to-background">
       <Card className="w-full max-w-sm">
         <CardHeader className="items-center text-center space-y-2">
-          <div className="flex items-center justify-center size-10 rounded-xl bg-primary text-primary-foreground">
+          <div className="flex items-center justify-center size-10 rounded-xl bg-brand text-brand-foreground">
             <LogoMark className="size-5" />
           </div>
           <CardTitle className="text-lg">Sign in to Collectfolio</CardTitle>

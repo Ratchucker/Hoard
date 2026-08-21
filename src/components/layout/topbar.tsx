@@ -1,17 +1,14 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu } from "lucide-react";
-import { LogoMark } from "@/components/logo";
+import * as React from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Menu, LogOut } from "lucide-react";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
-import { NAV_ITEMS } from "@/components/layout/nav-items";
-import { cn } from "@/lib/utils";
+import { SidebarContent } from "@/components/layout/sidebar-content";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuthStore } from "@/lib/auth/store";
-import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +17,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut } from "lucide-react";
 
 const TITLES: Record<string, string> = {
   "/dashboard": "Dashboard",
@@ -49,45 +45,23 @@ export function Topbar() {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const signOut = useAuthStore((s) => s.signOut);
+  const [sheetOpen, setSheetOpen] = React.useState(false);
 
   const initials = user?.name
     ? user.name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase()
     : "?";
 
   return (
-    <header className="sticky top-0 z-20 h-16 border-b bg-background/80 backdrop-blur supports-backdrop-blur:bg-background/60 flex items-center gap-3 px-4 md:px-6">
-      <Sheet>
+    <header className="sticky top-0 z-20 h-16 border-b border-border/70 bg-background/80 backdrop-blur supports-backdrop-blur:bg-background/60 flex items-center gap-3 px-4 md:px-6">
+      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon" className="md:hidden">
             <Menu className="size-5" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-72 p-0">
+        <SheetContent side="left" className="w-72 p-0 border-0">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
-          <div className="flex items-center gap-2 px-5 h-16 border-b shrink-0">
-            <div className="flex items-center justify-center size-8 rounded-lg bg-primary text-primary-foreground">
-              <LogoMark className="size-4.5" />
-            </div>
-            <span className="font-semibold tracking-tight text-[15px]">Collectfolio</span>
-          </div>
-          <nav className="p-3 space-y-0.5">
-            {NAV_ITEMS.map((item) => {
-              const active = pathname === item.href || pathname.startsWith(item.href + "/");
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium",
-                    active ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent hover:text-foreground"
-                  )}
-                >
-                  <item.icon className="size-4" />
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
+          <SidebarContent onNavigate={() => setSheetOpen(false)} />
         </SheetContent>
       </Sheet>
 

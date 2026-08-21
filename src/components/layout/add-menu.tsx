@@ -28,16 +28,17 @@ export function AddMenu({ variant = "default" }: { variant?: "default" | "fab" }
       <DropdownMenuTrigger asChild>
         {variant === "fab" ? (
           <Button
+            variant="accent"
             size="icon"
-            className="h-14 w-14 rounded-full shadow-lg shadow-primary/30"
-            aria-label="Add"
+            className="h-14 w-14 rounded-full shadow-lg shadow-brand/30"
+            aria-label="Add card"
           >
             <Plus className="size-6" />
           </Button>
         ) : (
-          <Button className="gap-1.5">
+          <Button variant="accent" className="w-full gap-1.5 justify-center">
             <Plus className="size-4" />
-            Add
+            Add Card
           </Button>
         )}
       </DropdownMenuTrigger>
