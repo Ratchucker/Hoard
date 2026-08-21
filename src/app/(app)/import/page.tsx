@@ -14,10 +14,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { UploadCloud, FileText } from "lucide-react";
 import { money } from "@/lib/types";
+import { normalizeCategory, normalizeCondition } from "@/lib/data/import-normalize";
 import { toast } from "sonner";
 
 const TARGET_FIELDS = [
   { key: "name", label: "Name", required: true },
+  { key: "category", label: "Category", required: false },
   { key: "set", label: "Set", required: false },
   { key: "number", label: "Number", required: false },
   { key: "quantity", label: "Quantity", required: false },
@@ -87,11 +89,11 @@ export default function ImportPage() {
       const grade = mapping.grade ? row[mapping.grade] : undefined;
       addCollectible({
         name,
-        category: "trading_card",
+        category: normalizeCategory(mapping.category ? row[mapping.category] : undefined),
         set: mapping.set ? row[mapping.set] : undefined,
         itemNumber: mapping.number ? row[mapping.number] : undefined,
         quantity,
-        condition: "near_mint",
+        condition: normalizeCondition(mapping.condition ? row[mapping.condition] : undefined),
         isGraded: !!grade,
         grade: grade || undefined,
         gradingCompany: mapping.gradingCompany ? row[mapping.gradingCompany] : undefined,
