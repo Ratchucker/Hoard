@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ledger — Collectibles ROI Tracker",
+  title: "Collectfolio — Collectibles ROI Tracker",
   description: "Track profit, loss, cost basis, and ROI from buying and selling collectibles.",
 };
 

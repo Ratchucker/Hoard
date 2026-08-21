@@ -42,7 +42,7 @@ export function AddMenu({ variant = "default" }: { variant?: "default" | "fab" }
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-72">
-        <DropdownMenuLabel>Add to your ledger</DropdownMenuLabel>
+        <DropdownMenuLabel>Add to your portfolio</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {ACTIONS.map((action) => (
           <DropdownMenuItem key={action.href} asChild className="py-2.5">

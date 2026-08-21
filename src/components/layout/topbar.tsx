@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Layers3 } from "lucide-react";
+import { Menu } from "lucide-react";
+import { LogoMark } from "@/components/logo";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -40,7 +41,7 @@ const TITLES: Record<string, string> = {
 function titleFor(pathname: string) {
   if (TITLES[pathname]) return TITLES[pathname];
   const match = Object.keys(TITLES).find((k) => pathname.startsWith(k + "/"));
-  return match ? TITLES[match] : "Ledger";
+  return match ? TITLES[match] : "Collectfolio";
 }
 
 export function Topbar() {
@@ -65,9 +66,9 @@ export function Topbar() {
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <div className="flex items-center gap-2 px-5 h-16 border-b shrink-0">
             <div className="flex items-center justify-center size-8 rounded-lg bg-primary text-primary-foreground">
-              <Layers3 className="size-4.5" />
+              <LogoMark className="size-4.5" />
             </div>
-            <span className="font-semibold tracking-tight text-[15px]">Ledger</span>
+            <span className="font-semibold tracking-tight text-[15px]">Collectfolio</span>
           </div>
           <nav className="p-3 space-y-0.5">
             {NAV_ITEMS.map((item) => {

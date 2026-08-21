@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Layers3 } from "lucide-react";
+import { LogoMark } from "@/components/logo";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,9 +34,9 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm">
         <CardHeader className="items-center text-center space-y-2">
           <div className="flex items-center justify-center size-10 rounded-xl bg-primary text-primary-foreground">
-            <Layers3 className="size-5" />
+            <LogoMark className="size-5" />
           </div>
-          <CardTitle className="text-lg">Sign in to Ledger</CardTitle>
+          <CardTitle className="text-lg">Sign in to Collectfolio</CardTitle>
           <p className="text-sm text-muted-foreground">Track profit, loss, and ROI from your collectibles.</p>
         </CardHeader>
         <CardContent>

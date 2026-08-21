@@ -1,4 +1,4 @@
-# Ledger — Collectibles Profit/ROI Tracker
+# Collectfolio — Collectibles Profit/ROI Tracker
 
 An investment-portfolio-style tracker for collectibles (trading cards to start; the data model
 also covers sports cards, comics, LEGO, Funko, coins, and video games). The core question it

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "@/components/layout/nav-items";
 import { AddMenu } from "@/components/layout/add-menu";
-import { Layers3 } from "lucide-react";
+import { LogoMark } from "@/components/logo";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -14,9 +14,9 @@ export function Sidebar() {
     <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 border-r bg-card/50">
       <div className="flex items-center gap-2 px-5 h-16 border-b shrink-0">
         <div className="flex items-center justify-center size-8 rounded-lg bg-primary text-primary-foreground">
-          <Layers3 className="size-4.5" />
+          <LogoMark className="size-4.5" />
         </div>
-        <span className="font-semibold tracking-tight text-[15px]">Ledger</span>
+        <span className="font-semibold tracking-tight text-[15px]">Collectfolio</span>
       </div>
 
       <div className="px-4 pt-4">
