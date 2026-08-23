@@ -17,7 +17,7 @@ import {
   unrealisedGain,
   unrealisedRoi,
 } from "@/lib/calculations";
-import { formatCurrency, formatDate, daysBetween } from "@/lib/format";
+import { formatCurrency, formatDate, formatDays, daysBetween } from "@/lib/format";
 import { CATEGORY_LABELS, CONDITION_LABELS, EXPENSE_TYPE_LABELS, PURCHASE_SOURCE_LABELS } from "@/lib/types";
 import {
   ImageOff,
@@ -68,6 +68,8 @@ function ItemDetailContent() {
   const attachments = useStore((s) => s.attachments);
   const lots = useStore((s) => s.lots);
   const tags = useStore((s) => s.tags);
+  const trades = useStore((s) => s.trades);
+  const tradeItems = useStore((s) => s.tradeItems);
   const updateCollectible = useStore((s) => s.updateCollectible);
   const updateEstimatedValue = useStore((s) => s.updateEstimatedValue);
   const addAttachment = useStore((s) => s.addAttachment);
@@ -100,6 +102,23 @@ function ItemDetailContent() {
   const itemAttachments = attachments.filter((a) => a.collectibleId === item.id);
   const lot = item.lotId ? lots.find((l) => l.id === item.lotId) : undefined;
   const canSell = item.quantity > 0;
+
+  const receivedTradeItem = tradeItems.find((ti) => ti.collectibleId === item.id && ti.direction === "received");
+  const trade = receivedTradeItem ? trades.find((t) => t.id === receivedTradeItem.tradeId) : undefined;
+  const givenInTrade = trade ? tradeItems.filter((ti) => ti.tradeId === trade.id && ti.direction === "given") : [];
+  const tradeBreakdown = trade
+    ? [
+        ...givenInTrade.map((g) => {
+          const givenItem = collectibles.find((c) => c.id === g.collectibleId);
+          return `${formatCurrency(g.costBasisAtTrade ?? 0)} cost basis of ${givenItem?.name ?? "traded item"}`;
+        }),
+        trade.cashAdded > 0 ? `${formatCurrency(trade.cashAdded)} cash added` : null,
+        trade.fees > 0 ? `${formatCurrency(trade.fees)} fees` : null,
+        trade.shipping > 0 ? `${formatCurrency(trade.shipping)} shipping` : null,
+      ]
+        .filter((p): p is string => Boolean(p))
+        .join(" + ") + (trade.cashReceived > 0 ? ` − ${formatCurrency(trade.cashReceived)} cash received` : "")
+    : undefined;
 
   function saveNotes() {
     updateCollectible(item!.id, { notes });
@@ -195,7 +214,7 @@ function ItemDetailContent() {
               <span>·</span>
               <span>Qty owned: {item.quantity}{item.originalQuantity !== item.quantity ? ` of ${item.originalQuantity}` : ""}</span>
               <span>·</span>
-              <span>{days} days held</span>
+              <span>{formatDays(days)} held</span>
               {lot && (
                 <>
                   <span>·</span>
@@ -224,7 +243,14 @@ function ItemDetailContent() {
             <CardContent className="space-y-2 text-sm">
               <Row label="Purchase price" value={formatCurrency(item.lotId ? item.allocatedLotCost ?? 0 : item.purchasePrice.baseAmount)} sub={item.lotId ? "allocated from lot" : undefined} />
               {!item.lotId && (item.allocatedLotCost ?? 0) > 0 && (
-                <Row label="Cost basis from trade" value={formatCurrency(item.allocatedLotCost ?? 0)} />
+                <>
+                  <Row label="Cost basis from trade" value={formatCurrency(item.allocatedLotCost ?? 0)} />
+                  {tradeBreakdown && (
+                    <p className="text-xs text-muted-foreground -mt-1">
+                      {tradeBreakdown} · <Link href="/trades" className="text-primary hover:underline">view trade</Link>
+                    </p>
+                  )}
+                </>
               )}
               {itemExpenses.map((e) => (
                 <Row key={e.id} label={EXPENSE_TYPE_LABELS[e.type]} value={formatCurrency(e.amount.baseAmount)} />

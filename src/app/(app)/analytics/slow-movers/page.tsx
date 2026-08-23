@@ -10,7 +10,7 @@ import { StatTile } from "@/components/shared/stat-tile";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { PnlText } from "@/components/shared/pnl-text";
-import { formatCurrency } from "@/lib/format";
+import { formatCurrency, formatDays } from "@/lib/format";
 import { slowMovers } from "@/lib/data/selectors";
 import { Clock, Settings } from "lucide-react";
 
@@ -44,7 +44,7 @@ function SlowMoversContent() {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Flagged when held ≥ {settings.slowMoverDaysThreshold} days AND ROI below {settings.slowMoverRoiThreshold}%.
+        Flagged when held ≥ {formatDays(settings.slowMoverDaysThreshold)} AND ROI below {settings.slowMoverRoiThreshold}%.
       </p>
 
       {movers.length === 0 ? (

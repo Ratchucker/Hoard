@@ -60,6 +60,11 @@ export function daysBetween(startIso: string, endIso: string = new Date().toISOS
   return Math.max(0, Math.round((end - start) / (1000 * 60 * 60 * 24)));
 }
 
+/** "1 day" / "3 days" — correctly pluralized, for the spelled-out form. */
+export function formatDays(days: number): string {
+  return `${days} day${days === 1 ? "" : "s"}`;
+}
+
 /** Tailwind text color class for a signed dollar/percent value. */
 export function pnlColorClass(value: number): string {
   if (value > 0) return "text-emerald-600 dark:text-emerald-400";

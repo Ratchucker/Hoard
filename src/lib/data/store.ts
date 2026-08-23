@@ -10,6 +10,7 @@ import {
   itemCostBasis,
 } from "@/lib/calculations";
 import { money, round2 } from "@/lib/types";
+import { formatCurrency as formatMoney } from "@/lib/format";
 import type {
   ActivityEvent,
   Attachment,
@@ -52,7 +53,7 @@ interface StoreState {
   importTemplates: ImportTemplate[];
 
   // Collectibles
-  addCollectible: (input: NewCollectibleInput) => ID;
+  addCollectible: (input: NewCollectibleInput, options?: AddCollectibleOptions) => ID;
   updateCollectible: (id: ID, patch: Partial<Collectible>) => void;
   updateEstimatedValue: (id: ID, value: number, isManual?: boolean) => void;
   deleteCollectible: (id: ID) => void;
@@ -114,6 +115,13 @@ export interface NewCollectibleInput
     | "originalQuantity"
   > {
   quantity: number;
+}
+
+export interface AddCollectibleOptions {
+  /** Overrides the default "Purchased for $X" timeline entry — for non-cash acquisitions (trades, lot splits). */
+  timelineDescription?: string;
+  /** Overrides the default "Purchased X" activity-log entry. */
+  activityDescription?: string;
 }
 
 export interface RecordSaleInput {
@@ -183,7 +191,7 @@ export const useStore = create<StoreState>()(
       hydrated: false,
       ...buildSeedData(),
 
-      addCollectible: (input) => {
+      addCollectible: (input, options) => {
         const id = uuid();
         const ts = nowIso();
         const collectible: Collectible = {
@@ -199,7 +207,9 @@ export const useStore = create<StoreState>()(
         get().logActivity({
           date: input.purchaseDate,
           type: "purchase",
-          description: `Purchased ${input.name}${input.quantity > 1 ? ` x${input.quantity}` : ""}`,
+          description:
+            options?.activityDescription ??
+            `Purchased ${input.name}${input.quantity > 1 ? ` x${input.quantity}` : ""}`,
           amount: input.purchasePrice.baseAmount,
           collectibleId: id,
         });
@@ -211,7 +221,7 @@ export const useStore = create<StoreState>()(
               collectibleId: id,
               type: "purchased",
               date: input.purchaseDate,
-              description: `Purchased for ${input.purchasePrice.baseAmount}`,
+              description: options?.timelineDescription ?? `Purchased for ${input.purchasePrice.baseAmount}`,
             },
           ],
         }));
@@ -494,9 +504,11 @@ export const useStore = create<StoreState>()(
         };
 
         const tradeItems: TradeItem[] = [];
+        const givenBreakdown: { name: string; costBasis: number }[] = [];
         for (const g of input.given) {
           const item = state.collectibles.find((c) => c.id === g.collectibleId);
           const costBasis = item ? costBasisPerUnit(item, state.expenses) * item.quantity : 0;
+          givenBreakdown.push({ name: item?.name ?? "traded item", costBasis: round2(costBasis) });
           tradeItems.push({
             id: uuid(),
             tradeId: id,
@@ -507,9 +519,30 @@ export const useStore = create<StoreState>()(
           });
         }
 
+        // Human-readable breakdown of how the received item's transferred cost basis was
+        // derived, so it doesn't look like an unexplained number on the item detail page.
+        const positiveParts = [
+          ...givenBreakdown.map((g) => `${formatMoney(g.costBasis)} cost basis of ${g.name}`),
+          input.cashAdded > 0 ? `${formatMoney(input.cashAdded)} cash added` : null,
+          input.fees > 0 ? `${formatMoney(input.fees)} fees` : null,
+          input.shipping > 0 ? `${formatMoney(input.shipping)} shipping` : null,
+        ].filter((p): p is string => Boolean(p));
+        let breakdownText = positiveParts.length > 0 ? positiveParts.join(" + ") : undefined;
+        if (input.cashReceived > 0 && breakdownText) {
+          breakdownText += ` − ${formatMoney(input.cashReceived)} cash received`;
+        }
+
         const receivedIds: ID[] = [];
         for (const r of input.received) {
-          const newId = get().addCollectible({ ...r, purchaseSource: "private_sale", purchaseNotes: `Received via trade` });
+          const newId = get().addCollectible(
+            { ...r, purchaseSource: "private_sale", purchaseNotes: `Received via trade` },
+            {
+              timelineDescription: `Received via trade${input.counterparty ? ` with ${input.counterparty}` : ""}${
+                breakdownText ? ` — cost basis: ${breakdownText}` : ""
+              }`,
+              activityDescription: `Received ${r.name} via trade`,
+            }
+          );
           receivedIds.push(newId);
           tradeItems.push({
             id: uuid(),

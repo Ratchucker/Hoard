@@ -15,7 +15,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
     <div className="flex flex-col h-full bg-[#0B132B]">
       <div className="flex items-center gap-2.5 px-5 h-16 shrink-0">
         <div className="flex items-center justify-center size-8 rounded-lg bg-brand text-brand-foreground shrink-0">
-          <LogoMark className="size-4.5" />
+          <LogoMark className="size-6" />
         </div>
         <span className="font-serif text-[19px] font-semibold tracking-tight text-white">Collectfolio</span>
       </div>

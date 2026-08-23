@@ -34,7 +34,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm">
         <CardHeader className="items-center text-center space-y-2">
           <div className="flex items-center justify-center size-10 rounded-xl bg-brand text-brand-foreground">
-            <LogoMark className="size-5" />
+            <LogoMark className="size-7" />
           </div>
           <CardTitle className="text-lg">Sign in to Collectfolio</CardTitle>
           <p className="text-sm text-muted-foreground">Track profit, loss, and ROI from your collectibles.</p>

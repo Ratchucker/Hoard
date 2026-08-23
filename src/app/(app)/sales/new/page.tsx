@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { estimateFees, itemCostBasis, holdingPeriodDays, annualisedRoi, roiPercent } from "@/lib/calculations";
-import { formatCurrency, formatSignedPercent } from "@/lib/format";
+import { formatCurrency, formatDays, formatSignedPercent } from "@/lib/format";
 import { PnlText } from "@/components/shared/pnl-text";
 import { toast } from "sonner";
 
@@ -184,8 +184,18 @@ function NewSaleForm() {
             <Separator />
             <SummaryRow label="Realised profit" value={<PnlText value={profit} />} bold />
             <SummaryRow label="ROI" value={formatSignedPercent(roi)} bold />
-            <SummaryRow label="Holding period" value={`${holdingDays} days`} />
-            {holdingDays > 0 && <SummaryRow label="Annualised ROI" value={formatSignedPercent(annualised)} />}
+            <SummaryRow label="Holding period" value={formatDays(holdingDays)} />
+            {holdingDays > 0 && (
+              <>
+                <SummaryRow label="Annualised ROI" value={formatSignedPercent(annualised)} />
+                {holdingDays < 90 && (
+                  <p className="text-xs text-muted-foreground -mt-1">
+                    Extrapolated from a {holdingDays}-day hold — short flips produce large annualised figures that
+                    aren&rsquo;t a reliable year-long projection.
+                  </p>
+                )}
+              </>
+            )}
           </CardContent>
         </Card>
 

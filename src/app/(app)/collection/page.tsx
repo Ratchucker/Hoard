@@ -88,10 +88,10 @@ function CollectionContent() {
         }
       />
 
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
+      <div className="space-y-3">
+        <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-          <Input placeholder="Search by name, set, or game…" className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} />
+          <Input placeholder="Search by name, set, or game…" className="pl-9 w-full" value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         <div className="flex gap-2 flex-wrap">
           <Select value={category} onValueChange={setCategory}>
