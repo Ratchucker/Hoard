@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { NAV_GROUPS, NAV_GROUP_LABELS } from "@/components/layout/nav-items";
 import { AddMenu } from "@/components/layout/add-menu";
 import { LogoMark } from "@/components/logo";
+import { isSupabaseConfigured } from "@/lib/supabase/client";
 
 /** Shared branded nav content — used by the desktop sidebar and the mobile nav sheet. */
 export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
@@ -13,11 +14,9 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <div className="flex flex-col h-full bg-[#0B132B]">
-      <div className="flex items-center gap-2.5 px-5 h-16 shrink-0">
-        <div className="flex items-center justify-center size-8 rounded-lg bg-brand text-brand-foreground shrink-0">
-          <LogoMark className="size-6" />
-        </div>
-        <span className="font-serif text-[19px] font-semibold tracking-tight text-white">Collectfolio</span>
+      <div className="flex items-center gap-2 px-5 h-16 shrink-0">
+        <LogoMark tone="reversed" className="size-8 shrink-0" />
+        <span className="font-serif text-[19px] font-semibold tracking-tight text-white">Hoard</span>
       </div>
 
       <div className="px-4 pb-4">
@@ -56,7 +55,9 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </nav>
 
-      <div className="px-5 py-4 text-xs text-white/30">Demo data · Local device only</div>
+      <div className="px-5 py-4 text-xs text-white/30">
+        {isSupabaseConfigured ? "Synced to your account" : "Demo data · Local device only"}
+      </div>
     </div>
   );
 }

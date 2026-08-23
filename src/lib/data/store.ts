@@ -1,7 +1,6 @@
 "use client";
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { v4 as uuid } from "uuid";
 import {
   costBasisForQuantity,
@@ -101,6 +100,41 @@ interface StoreState {
   // Utility
   resetToSeed: () => void;
   logActivity: (event: Omit<ActivityEvent, "id">) => void;
+  /** Replaces all data fields with a remotely-loaded snapshot (see src/lib/data/sync.ts). */
+  hydrateFromRemote: (data: RemoteData) => void;
+  /** Marks the store as not-yet-loaded — used while switching accounts, so the UI shows a
+   *  loading skeleton instead of the previous user's data until the new fetch completes. */
+  setHydrated: (value: boolean) => void;
+}
+
+/** The subset of StoreState that is actually persisted (i.e. everything except actions). */
+export const DATA_KEYS = [
+  "collectibles",
+  "expenses",
+  "sales",
+  "marketplaces",
+  "gradingSubmissions",
+  "lots",
+  "trades",
+  "tradeItems",
+  "wishlist",
+  "tags",
+  "attachments",
+  "timelineEvents",
+  "activityEvents",
+  "valuationHistory",
+  "settings",
+  "importTemplates",
+] as const;
+
+export type RemoteData = Pick<StoreState, (typeof DATA_KEYS)[number]>;
+
+export function extractRemoteData(state: StoreState): RemoteData {
+  const result = {} as RemoteData;
+  for (const key of DATA_KEYS) {
+    (result as Record<string, unknown>)[key] = state[key];
+  }
+  return result;
 }
 
 export interface NewCollectibleInput
@@ -186,10 +220,9 @@ function nowIso() {
 }
 
 export const useStore = create<StoreState>()(
-  persist(
-    (set, get) => ({
-      hydrated: false,
-      ...buildSeedData(),
+  (set, get) => ({
+    hydrated: false,
+    ...buildSeedData(),
 
       addCollectible: (input, options) => {
         const id = uuid();
@@ -626,14 +659,15 @@ export const useStore = create<StoreState>()(
       logActivity: (event) => {
         set((s) => ({ activityEvents: [...s.activityEvents, { ...event, id: uuid() }] }));
       },
-    }),
-    {
-      name: "card-roi-app-storage",
-      onRehydrateStorage: () => (state) => {
-        if (state) state.hydrated = true;
+
+      hydrateFromRemote: (data) => {
+        set({ ...data, hydrated: true });
       },
-    }
-  )
+
+      setHydrated: (value) => {
+        set({ hydrated: value });
+      },
+    })
 );
 
 export function itemTotalCostBasis(item: Collectible, expenses: Expense[]) {

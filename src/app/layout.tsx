@@ -24,7 +24,7 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Collectfolio — Collectibles ROI Tracker",
+  title: "Hoard — Collectibles ROI Tracker",
   description: "Track profit, loss, cost basis, and ROI from buying and selling collectibles.",
 };
 

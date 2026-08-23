@@ -1,4 +1,4 @@
-// Column-mapping logic for CSV import: the list of fields Collectfolio understands,
+// Column-mapping logic for CSV import: the list of fields Hoard understands,
 // and best-effort auto-matching of a CSV's headers onto those fields by name.
 // Pure/testable — no React, no store access.
 

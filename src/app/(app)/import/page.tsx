@@ -127,7 +127,7 @@ export default function ImportPage() {
     <div className="max-w-4xl space-y-6">
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Import Collection</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Move your existing collection into Collectfolio.</p>
+        <p className="text-sm text-muted-foreground mt-0.5">Move your existing collection into Hoard.</p>
       </div>
 
       <div className="flex justify-center py-1">

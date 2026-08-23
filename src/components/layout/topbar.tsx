@@ -37,7 +37,7 @@ const TITLES: Record<string, string> = {
 function titleFor(pathname: string) {
   if (TITLES[pathname]) return TITLES[pathname];
   const match = Object.keys(TITLES).find((k) => pathname.startsWith(k + "/"));
-  return match ? TITLES[match] : "Collectfolio";
+  return match ? TITLES[match] : "Hoard";
 }
 
 export function Topbar() {
@@ -47,9 +47,7 @@ export function Topbar() {
   const signOut = useAuthStore((s) => s.signOut);
   const [sheetOpen, setSheetOpen] = React.useState(false);
 
-  const initials = user?.name
-    ? user.name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase()
-    : "?";
+  const initials = user?.email ? user.email.slice(0, 2).toUpperCase() : "?";
 
   return (
     <header className="sticky top-0 z-20 h-16 border-b border-border/70 bg-background/80 backdrop-blur supports-backdrop-blur:bg-background/60 flex items-center gap-3 px-4 md:px-6">
@@ -80,13 +78,12 @@ export function Topbar() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel className="font-normal">
-            <p className="text-sm font-medium">{user?.name}</p>
-            <p className="text-xs text-muted-foreground">{user?.email}</p>
+            <p className="text-sm font-medium truncate">{user?.email}</p>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            onClick={() => {
-              signOut();
+            onClick={async () => {
+              await signOut();
               router.push("/login");
             }}
             className="gap-2 text-red-600 focus:text-red-600"
