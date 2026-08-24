@@ -78,7 +78,10 @@ export function buildSeedData() {
     activityEvents.push({ ...e, id: id("act") });
   }
 
-  function makeItem(partial: Omit<Collectible, "id" | "createdAt" | "updatedAt" | "estimatedValueUpdatedAt"> & { valuedDaysAgo?: number }): Collectible {
+  function makeItem(
+    partial: Omit<Collectible, "id" | "createdAt" | "updatedAt" | "estimatedValueUpdatedAt"> & { valuedDaysAgo?: number },
+    acquisition?: { timelineDescription: string; activityDescription: string }
+  ): Collectible {
     const cid = id("col");
     const createdAt = partial.purchaseDate;
     const item: Collectible = {
@@ -89,8 +92,19 @@ export function buildSeedData() {
       estimatedValueUpdatedAt: daysAgo(partial.valuedDaysAgo ?? 3),
     };
     collectibles.push(item);
-    pushTimeline(cid, "purchased", partial.purchaseDate, `Purchased for $${partial.purchasePrice.baseAmount}`);
-    pushActivity({ date: partial.purchaseDate, type: "purchase", description: `Purchased ${partial.name}`, amount: partial.purchasePrice.baseAmount, collectibleId: cid });
+    pushTimeline(
+      cid,
+      "purchased",
+      partial.purchaseDate,
+      acquisition?.timelineDescription ?? `Purchased for $${partial.purchasePrice.baseAmount}`
+    );
+    pushActivity({
+      date: partial.purchaseDate,
+      type: "purchase",
+      description: acquisition?.activityDescription ?? `Purchased ${partial.name}`,
+      amount: partial.purchasePrice.baseAmount,
+      collectibleId: cid,
+    });
     valuationHistory.push({ id: id("val"), collectibleId: cid, value: partial.estimatedValue, date: daysAgo(partial.valuedDaysAgo ?? 3), isManual: true });
     return item;
   }
@@ -544,27 +558,35 @@ export function buildSeedData() {
     createdAt: daysAgo(45),
   };
   trades.push(trade);
-  const receivedCard = makeItem({
-    name: "Charizard Holo (Trade-In)",
-    category: "trading_card",
-    game: "Pokemon",
-    set: "Base Set",
-    itemNumber: "4/102",
-    quantity: 1,
-    originalQuantity: 1,
-    condition: "lightly_played",
-    isGraded: false,
-    purchaseDate: daysAgo(45),
-    purchasePrice: money(0),
-    purchaseSource: "private_sale",
-    purchaseNotes: "Received via trade",
-    estimatedValue: 180,
-    estimatedValueIsManual: true,
-    tags: [pc.id],
-    status: "owned",
-    valuedDaysAgo: 12,
-  });
-  receivedCard.allocatedLotCost = 100; // trade cost basis transferred (cash added + given card's cost basis)
+  const receivedCard = makeItem(
+    {
+      name: "Charizard Holo (Trade-In)",
+      category: "trading_card",
+      game: "Pokemon",
+      set: "Base Set",
+      itemNumber: "4/102",
+      quantity: 1,
+      originalQuantity: 1,
+      condition: "lightly_played",
+      isGraded: false,
+      purchaseDate: daysAgo(45),
+      purchasePrice: money(0),
+      purchaseSource: "private_sale",
+      purchaseNotes: "Received via trade",
+      estimatedValue: 180,
+      estimatedValueIsManual: true,
+      tags: [pc.id],
+      status: "owned",
+      valuedDaysAgo: 12,
+    },
+    {
+      timelineDescription:
+        "Received via trade with tradernick_ — cost basis: $80.00 cost basis of Pikachu Promo Stamp + $20.00 cash added + $10.00 shipping",
+      activityDescription: "Received Charizard Holo (Trade-In) via trade",
+    }
+  );
+  // Transferred cost basis = given item's cost basis ($80) + cash added ($20) + shipping ($10).
+  receivedCard.allocatedLotCost = 110;
   tradeItems.push(
     { id: id("ti"), tradeId: trade.id, collectibleId: givenCard.id, direction: "given", estimatedValue: 150, costBasisAtTrade: 80 },
     { id: id("ti"), tradeId: trade.id, collectibleId: receivedCard.id, direction: "received", estimatedValue: 180 }

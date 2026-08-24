@@ -20,7 +20,7 @@ import { MappingTable } from "@/components/import/mapping-table";
 import { PreviewTable } from "@/components/import/preview-table";
 import { toast } from "sonner";
 
-const INTEGRATIONS = ["Collectr", "PriceCharting", "TCGplayer", "CollX", "Other"];
+const INTEGRATIONS = ["Collectr", "TCGplayer", "CollX", "Other"];
 
 export default function ImportPage() {
   const router = useRouter();
