@@ -7,6 +7,7 @@ import { NAV_GROUPS, NAV_GROUP_LABELS } from "@/components/layout/nav-items";
 import { AddMenu } from "@/components/layout/add-menu";
 import { LogoMark } from "@/components/logo";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
+import { Coffee } from "lucide-react";
 
 /** Shared branded nav content — used by the desktop sidebar and the mobile nav sheet. */
 export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
@@ -55,7 +56,19 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </nav>
 
-      <div className="px-5 py-4 text-xs text-white/30">
+      <div className="px-3 pb-3">
+        <a
+          href="https://buymeacoffee.com/projectstrange"
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-2.5 rounded-md px-3 py-2 text-[13.5px] font-medium text-white/55 hover:text-white hover:bg-white/5 transition-colors"
+        >
+          <Coffee className="size-4 shrink-0" />
+          Buy me a coffee
+        </a>
+      </div>
+
+      <div className="px-5 pb-4 text-xs text-white/30">
         {isSupabaseConfigured ? "Synced to your account" : "Demo data · Local device only"}
       </div>
     </div>
