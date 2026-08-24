@@ -25,8 +25,8 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-primary/5 to-background">
       <Card className="w-full max-w-sm">
         <CardHeader className="items-center text-center space-y-2">
-          <div className="flex items-center justify-center size-16 rounded-2xl bg-[#F2F2F2]">
-            <LogoMark className="size-11" />
+          <div className="flex items-center justify-center size-10 rounded-xl bg-[#0B132B] text-white">
+            <LogoMark className="size-6" />
           </div>
           <CardTitle className="text-lg font-serif text-xl">Hoard</CardTitle>
           <p className="text-sm text-muted-foreground">Track profit, loss, and ROI from your collectibles.</p>

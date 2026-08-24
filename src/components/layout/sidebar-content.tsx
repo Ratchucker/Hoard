@@ -16,7 +16,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="flex flex-col h-full bg-[#0B132B]">
       <div className="flex items-center gap-2 px-5 h-16 shrink-0">
-        <LogoMark tone="reversed" className="size-8 shrink-0" />
+        <LogoMark className="size-7 text-white shrink-0" />
         <span className="font-serif text-[19px] font-semibold tracking-tight text-white">Hoard</span>
       </div>
 
